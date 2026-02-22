@@ -129,7 +129,10 @@ export function TalkCard({
       onOptimisticUpdate?.(talk.documentId, false);
 
       // Track analytics event
-      trackRemoveTalkFromAgenda(talk.documentId!, eventSlug || eventDocumentId!);
+      trackRemoveTalkFromAgenda(
+        talk.documentId!,
+        eventSlug || eventDocumentId!
+      );
 
       toast({
         title: 'Talk removida da agenda',
@@ -151,8 +154,8 @@ export function TalkCard({
 
   return (
     <div
-      className={`p-4 border rounded-lg hover:bg-gray-50 transition-colors ${
-        talk.highlight ? 'border-blue-200 bg-blue-50' : ''
+      className={`p-4 border border-border rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors ${
+        talk.highlight ? 'border-primary/50 bg-primary/10' : ''
       }`}
     >
       <div className="space-y-3">
@@ -170,7 +173,7 @@ export function TalkCard({
         </div>
 
         {talk.occur_date && (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
             <span>
               {adjustToBrazilTimezone(
@@ -184,11 +187,11 @@ export function TalkCard({
         )}
 
         {talk.description && typeof talk.description === 'string' && (
-          <p className="text-sm text-gray-600">{talk.description}</p>
+          <p className="text-sm text-muted-foreground">{talk.description}</p>
         )}
 
         {talk.room_description && typeof talk.room_description === 'string' && (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
             <span>{talk.room_description}</span>
           </div>
@@ -228,7 +231,7 @@ export function TalkCard({
               <Button
                 size="sm"
                 variant="outline"
-                className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                className="border-primary text-primary hover:bg-primary/10"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Ver Detalhes
@@ -244,7 +247,7 @@ export function TalkCard({
                   variant="outline"
                   onClick={handleRemoveFromAgenda}
                   disabled={isLoading}
-                  className="border-red-600 text-red-600 hover:bg-red-50"
+                  className="border-destructive text-destructive hover:bg-destructive/10"
                 >
                   <Minus className="h-4 w-4 mr-2" />
                   {isLoading ? 'Removendo...' : 'Remover da Agenda'}
@@ -254,7 +257,7 @@ export function TalkCard({
                   size="sm"
                   onClick={handleAddToAgenda}
                   disabled={isLoading}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   {isLoading ? 'Adicionando...' : 'Adicionar à Agenda'}

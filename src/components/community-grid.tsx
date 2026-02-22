@@ -22,15 +22,12 @@ export function CommunityGrid({
 }) {
   const { debouncedSearchTerm } = useFilters();
 
-  const { data, error } = useQuery<CommunitiesResponse>(
-    GET_COMMUNITIES,
-    {
-      variables: {
-        filters: debouncedSearchTerm ? { title: { contains: 'over' } } : {},
-      },
-      fetchPolicy: 'network-only',
-    }
-  );
+  const { data, error } = useQuery<CommunitiesResponse>(GET_COMMUNITIES, {
+    variables: {
+      filters: debouncedSearchTerm ? { title: { contains: 'over' } } : {},
+    },
+    fetchPolicy: 'network-only',
+  });
 
   const communities = data?.communities?.data || [];
 
@@ -70,7 +67,7 @@ export function CommunityGrid({
   if (communities.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">
+        <p className="text-muted-foreground text-lg">
           {debouncedSearchTerm
             ? 'Nenhuma comunidade encontrada com os filtros aplicados.'
             : 'Nenhuma comunidade disponível no momento.'}
@@ -123,7 +120,7 @@ export function CommunityGrid({
                   ? community.title
                   : 'Título não disponível'}
               </h3>
-              <p className="text-gray-600 mb-4 line-clamp-2">
+              <p className="text-muted-foreground mb-4 line-clamp-2">
                 {typeof community.short_description === 'string'
                   ? community.short_description
                   : 'Descrição não disponível'}
@@ -143,14 +140,14 @@ export function CommunityGrid({
                 <MapPin className="h-4 w-4" />
                 {community.location}
               </div> */}
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
                   {typeof community.members_quantity === 'number'
                     ? `${community.members_quantity} membros`
                     : '0 membros'}
                 </div>
                 {!!nextFutureEvents?.length && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
                     Próximo evento:{' '}
                     {adjustToBrazilTimezone(

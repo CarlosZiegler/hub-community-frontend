@@ -70,7 +70,7 @@ export function PastEventsSection() {
   if (pastEvents.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">
+        <p className="text-muted-foreground text-lg">
           {debouncedSearchTerm
             ? 'Nenhum evento passado encontrado com os filtros aplicados.'
             : 'Nenhum evento passado disponível no momento.'}
@@ -121,8 +121,8 @@ export function PastEventsSection() {
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {typeof event.start_date === 'string'
                     ? adjustToBrazilTimezone(
                         new Date(event.start_date)
@@ -131,8 +131,8 @@ export function PastEventsSection() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {typeof event.start_date === 'string'
                     ? adjustToBrazilTimezone(
                         new Date(event.start_date)
@@ -144,15 +144,15 @@ export function PastEventsSection() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {event.talks.length} palestras
                 </span>
               </div>
               {event.location?.title && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     {event.location.title}
                   </span>
                 </div>
@@ -162,7 +162,7 @@ export function PastEventsSection() {
             <div className="mb-4">
               <ExpandableRichText
                 content={event?.description || ''}
-                className="text-gray-600"
+                className="text-muted-foreground"
               />
             </div>
 

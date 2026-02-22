@@ -21,7 +21,7 @@ export function OngoingEventsSectionSkeleton() {
             </div>
           </div>
 
-          <CardContent className="p-6 bg-green-50/30">
+          <CardContent className="p-6 bg-green-50/30 dark:bg-green-950/10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               {[1, 2, 3, 4].map(j => (
                 <div key={j} className="flex items-center gap-2">
@@ -46,4 +46,3 @@ export function OngoingEventsSectionSkeleton() {
     </div>
   );
 }
-

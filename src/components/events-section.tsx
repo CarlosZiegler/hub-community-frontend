@@ -116,7 +116,7 @@ export function EventsSection({
   if (futureEvents.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 text-lg">
+        <p className="text-muted-foreground text-lg">
           {debouncedSearchTerm
             ? 'Nenhum evento encontrado com os filtros aplicados.'
             : 'Nenhum evento disponível no momento.'}
@@ -169,8 +169,8 @@ export function EventsSection({
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {typeof event.start_date === 'string'
                     ? adjustToBrazilTimezone(
                         new Date(event.start_date)
@@ -179,8 +179,8 @@ export function EventsSection({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {typeof event.start_date === 'string'
                     ? adjustToBrazilTimezone(
                         new Date(event.start_date)
@@ -192,15 +192,15 @@ export function EventsSection({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
                   {event.talks.length} palestras
                 </span>
               </div>
               {event.location?.title && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
                     {event.location.title}
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export function EventsSection({
 
             <ExpandableRichText
               content={event?.description || ''}
-              className="text-gray-600 mb-4"
+              className="text-muted-foreground mb-4"
             />
 
             <div className="flex justify-between items-center">
@@ -235,7 +235,7 @@ export function EventsSection({
                 <Button
                   variant="outline"
                   onClick={() => handleCreateAgenda(event)}
-                  className="border-blue-200 text-blue-600 hover:bg-blue-50"
+                  className="border-primary text-primary hover:bg-primary/10"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Criar Agenda
