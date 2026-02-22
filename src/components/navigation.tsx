@@ -3,7 +3,7 @@
 import { Calendar, LogOut, Menu, User, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { AuthModal } from '@/components/auth-modal';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -17,10 +17,24 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/auth-context';
 
+const ADMIN_EMAILS = [
+  'gleidson10daniel@hotmail.com',
+  'fjrleao@gmail.com',
+  'lucashenriqueblemos@gmail.com',
+  'marcelo@softprime.com.br',
+  'marcus.vinicius.marques@hotmail.com',
+  'pedrogoiania95@gmail.com',
+  'pedrogoiania95',
+];
+
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { isAuthenticated, user, signOut } = useAuth();
+
+  useEffect(() => {
+    console.log('logged user: ', user);
+  }, []);
 
   const handleSignOut = () => {
     signOut();
@@ -91,12 +105,14 @@ export function Navigation() {
                       <span>Perfil</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/admin/events" className="cursor-pointer">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      <span>Gerenciar Eventos</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  {user?.email && ADMIN_EMAILS.includes(user.email) && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin/events" className="cursor-pointer">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        <span>Gerenciar Eventos</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-red-500 focus:text-red-500 cursor-pointer"

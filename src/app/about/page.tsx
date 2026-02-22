@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-purple-600 to-blue-700 text-white py-20">
         <div className="container mx-auto px-4 text-center">
@@ -36,17 +36,17 @@ export default function AboutPage() {
         <section className="mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
                 Nossa História
               </h2>
-              <p className="text-gray-600 mb-4 leading-relaxed">
+              <p className="text-muted-foreground mb-4 leading-relaxed">
                 O HubCommunity nasceu da necessidade de centralizar informações
                 sobre comunidades e eventos de tecnologia em Goiás. Percebemos
                 que muitas pessoas talentosas estavam perdendo oportunidades
                 incríveis de aprendizado e networking simplesmente porque não
                 sabiam onde encontrar essas informações.
               </p>
-              <p className="text-gray-600 mb-6 leading-relaxed">
+              <p className="text-muted-foreground mb-6 leading-relaxed">
                 Desde 2013, já conectamos diversas pessoas com suas comunidades
                 ideais, facilitando o acesso a diversos eventos em Goiás.
               </p>
@@ -67,7 +67,7 @@ export default function AboutPage() {
 
         {/* Values Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Nossos Valores
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -77,7 +77,7 @@ export default function AboutPage() {
                 <CardTitle className="text-lg">Comunidade</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Acreditamos no poder da colaboração e do compartilhamento de
                   conhecimento.
                 </p>
@@ -90,7 +90,7 @@ export default function AboutPage() {
                 <CardTitle className="text-lg">Foco</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Mantemos o foco em conectar pessoas com as oportunidades
                   certas.
                 </p>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 <CardTitle className="text-lg">Paixão</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Somos apaixonados por tecnologia e pelo crescimento da
                   comunidade tech.
                 </p>
@@ -116,7 +116,7 @@ export default function AboutPage() {
                 <CardTitle className="text-lg">Inovação</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Buscamos sempre novas formas de melhorar a experiência dos
                   usuários.
                 </p>
@@ -160,7 +160,7 @@ export default function AboutPage() {
 
         {/* Team Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
             Nossa Equipe
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -175,8 +175,8 @@ export default function AboutPage() {
                   unoptimized
                 />
                 <h3 className="text-xl font-semibold mb-2">Pedro Goiânia</h3>
-                <p className="text-blue-600 mb-2">Co-Fundador</p>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-primary mb-2">Co-Fundador</p>
+                <p className="text-muted-foreground text-sm mb-4">
                   JavaScript Jedi com 10+ anos de experiência de desenvolvimento
                   e em comunidades tech.
                 </p>
@@ -186,21 +186,21 @@ export default function AboutPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    <Github className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                   </a>
                   <a
                     href="http://x.com/opedrogoiania"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Twitter className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    <Twitter className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                   </a>
                   <a
                     href="http://linkedin.com/in/pedrogoiania"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                   </a>
                 </div>
               </CardContent>
@@ -219,8 +219,8 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold mb-2">
                   Fábio Leão Júnior
                 </h3>
-                <p className="text-blue-600 mb-2">Co-Fundador</p>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-primary mb-2">Co-Fundador</p>
+                <p className="text-muted-foreground text-sm mb-4">
                   Desenvolvedor Full Stack com foco em React e Python,
                   apaixonado por criar soluções inovadoras com mais de 6 anos de
                   experiência. Líder de comunidade há 2 anos.
@@ -231,14 +231,14 @@ export default function AboutPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    <Github className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                   </a>
                   <a
                     href="http://linkedin.com/in/fjrleao"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                   </a>
                 </div>
               </CardContent>
@@ -255,8 +255,8 @@ export default function AboutPage() {
                   unoptimized
                 />
                 <h3 className="text-xl font-semibold mb-2">Marcus Vinícius</h3>
-                <p className="text-blue-600 mb-2">Co-Fundador</p>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-primary mb-2">Co-Fundador</p>
+                <p className="text-muted-foreground text-sm mb-4">
                   Desenvolvedor de Software com 7+ anos de experiência,
                   especialista no ecossistema React e React Native.
                 </p>
@@ -267,14 +267,14 @@ export default function AboutPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                      <Github className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                     </a>
                     <a
                       href="http://linkedin.com/in/mvmmarcus"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                      <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                     </a>
                   </div>
                 </div>
@@ -292,8 +292,8 @@ export default function AboutPage() {
                   unoptimized
                 />
                 <h3 className="text-xl font-semibold mb-2">Lucas Lemos</h3>
-                <p className="text-blue-600 mb-2">Co-Fundador</p>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-primary mb-2">Co-Fundador</p>
+                <p className="text-muted-foreground text-sm mb-4">
                   Engenheiro de Software com 8 anos de experiência, especialista
                   em desenvolvimento backend com Golang e Node.js, contribuidor
                   open-source e voluntário em comunidades de tecnologia.
@@ -305,14 +305,14 @@ export default function AboutPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                      <Github className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                     </a>
                     <a
                       href="http://linkedin.com/in/lucashenriqueblemos"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                      <Linkedin className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
                     </a>
                   </div>
                 </div>
@@ -323,12 +323,12 @@ export default function AboutPage() {
 
         {/* Contact Section */}
         <section>
-          <Card className="bg-gray-50">
+          <Card className="bg-muted">
             <CardContent className="p-12 text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
                 Entre em Contato
               </h2>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
                 Tem alguma dúvida, sugestão ou quer fazer parte da nossa equipe?
                 Adoraríamos ouvir de você!
               </p>

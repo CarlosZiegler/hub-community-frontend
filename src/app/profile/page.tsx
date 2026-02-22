@@ -37,10 +37,10 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     );
@@ -60,15 +60,17 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               Meu Perfil
             </h1>
-            <p className="text-gray-600">Gerencie suas informações pessoais</p>
+            <p className="text-muted-foreground">
+              Gerencie suas informações pessoais
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -98,10 +100,10 @@ export default function ProfilePage() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900">
+                      <h3 className="text-xl font-semibold text-foreground">
                         {user?.name || 'Usuário'}
                       </h3>
-                      <p className="text-gray-600">@{user?.username}</p>
+                      <p className="text-muted-foreground">@{user?.username}</p>
                       <Badge variant="secondary" className="mt-1">
                         <Shield className="h-3 w-3 mr-1" />
                         Membro
@@ -111,35 +113,35 @@ export default function ProfilePage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-muted-foreground">
                         Nome
                       </label>
-                      <p className="text-gray-900">
+                      <p className="text-foreground">
                         {user?.name || 'Não informado'}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-muted-foreground">
                         Username
                       </label>
-                      <p className="text-gray-900">@{user?.username}</p>
+                      <p className="text-foreground">@{user?.username}</p>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-muted-foreground">
                         Email
                       </label>
-                      <p className="text-gray-900 flex items-center gap-2">
+                      <p className="text-foreground flex items-center gap-2">
                         <Mail className="h-4 w-4" />
                         {user?.email}
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
+                      <label className="text-sm font-medium text-muted-foreground">
                         Status
                       </label>
                       <Badge
                         variant="outline"
-                        className="text-green-600 border-green-600"
+                        className="text-emerald-600 dark:text-emerald-500 border-emerald-600 dark:border-emerald-500"
                       >
                         Ativo
                       </Badge>
@@ -162,18 +164,18 @@ export default function ProfilePage() {
                 <CardContent>
                   {agendasLoading ? (
                     <div className="text-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
-                      <p className="mt-2 text-sm text-gray-600">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
+                      <p className="mt-2 text-sm text-muted-foreground">
                         Carregando agendas...
                       </p>
                     </div>
                   ) : agendas.length === 0 ? (
                     <div className="text-center py-8">
-                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-2">
+                      <Calendar className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                      <p className="text-muted-foreground mb-2">
                         Nenhuma agenda encontrada
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         Adicione eventos à sua agenda para visualizá-los aqui
                       </p>
                     </div>
@@ -182,9 +184,9 @@ export default function ProfilePage() {
                       {agendas.slice(0, 5).map(agenda => (
                         <div
                           key={agenda.documentId}
-                          className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
                         >
-                          <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                          <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                             {agenda.event.images &&
                             agenda.event.images.length > 0 ? (
                               <Image
@@ -195,25 +197,25 @@ export default function ProfilePage() {
                                 unoptimized
                               />
                             ) : (
-                              <div className="h-full w-full bg-gray-300 flex items-center justify-center">
-                                <Calendar className="h-6 w-6 text-gray-600" />
+                              <div className="h-full w-full bg-muted flex items-center justify-center">
+                                <Calendar className="h-6 w-6 text-muted-foreground" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-gray-900 truncate">
+                            <h4 className="font-medium text-foreground truncate">
                               {agenda.event.title}
                             </h4>
                             <div className="flex gap-2 mt-1">
                               <Link
                                 href={`/events/${agenda.event.documentId}`}
-                                className="text-sm text-blue-600 hover:underline"
+                                className="text-sm text-primary hover:underline"
                               >
                                 Ver evento
                               </Link>
                               <Link
                                 href={`/agendas/${agenda.documentId}`}
-                                className="text-sm text-green-600 hover:underline"
+                                className="text-sm text-emerald-600 dark:text-emerald-500 hover:underline"
                               >
                                 Ver agenda
                               </Link>
@@ -223,7 +225,7 @@ export default function ProfilePage() {
                       ))}
                       {agendas.length > 5 && (
                         <div className="text-center pt-2">
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             E mais {agendas.length - 5} evento
                             {agendas.length - 5 > 1 ? 's' : ''}...
                           </p>
@@ -286,17 +288,19 @@ export default function ProfilePage() {
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Comunidades</span>
+                      <span className="text-sm text-muted-foreground">
+                        Comunidades
+                      </span>
                       <span className="font-semibold">0</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-muted-foreground">
                         Eventos Participados
                       </span>
                       <span className="font-semibold">0</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-muted-foreground">
                         Eventos Criados
                       </span>
                       <span className="font-semibold">0</span>

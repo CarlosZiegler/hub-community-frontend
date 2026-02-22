@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function CommunitiesPage() {
   const [communityCount, setCommunityCount] = useState<number>(0);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-16">
         <div className="container mx-auto px-4 text-center">
@@ -51,10 +51,10 @@ export default function CommunitiesPage() {
 
         <section>
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-foreground">
               Todas as Comunidades
             </h2>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Encontradas: {communityCount} comunidades
             </p>
           </div>
