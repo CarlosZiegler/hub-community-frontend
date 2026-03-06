@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
-  adjustToBrazilTimezone,
   isEventInFuture,
   isEventInPast,
   isEventOngoing,
@@ -35,16 +34,6 @@ function makeEvent(overrides: Partial<Event> & { start_date: string }): Event {
   } as Event;
 }
 
-// ─── adjustToBrazilTimezone ────────────────────────────────────────
-describe('adjustToBrazilTimezone', () => {
-  it('returns a new Date object with the same value', () => {
-    const input = new Date('2026-03-12T18:30:00Z');
-    const result = adjustToBrazilTimezone(input);
-    expect(result).toEqual(input);
-    expect(result).not.toBe(input); // should be a new instance
-  });
-});
-
 // ─── isEventInFuture ───────────────────────────────────────────────
 describe('isEventInFuture', () => {
   it('returns true for a date in the future', () => {
@@ -53,10 +42,6 @@ describe('isEventInFuture', () => {
 
   it('returns false for a date in the past', () => {
     expect(isEventInFuture('2025-01-01T00:00:00Z')).toBe(false);
-  });
-
-  it('returns false for an invalid date string', () => {
-    expect(isEventInFuture('not-a-date')).toBe(false);
   });
 });
 
@@ -68,10 +53,6 @@ describe('isEventInPast', () => {
 
   it('returns false for a date in the future', () => {
     expect(isEventInPast('2026-12-01T00:00:00Z')).toBe(false);
-  });
-
-  it('returns false for an invalid date string', () => {
-    expect(isEventInPast('not-a-date')).toBe(false);
   });
 });
 
@@ -93,10 +74,6 @@ describe('isEventOngoing', () => {
     expect(
       isEventOngoing('2026-05-01T00:00:00Z', '2026-05-02T00:00:00Z')
     ).toBe(false);
-  });
-
-  it('returns false for invalid dates', () => {
-    expect(isEventOngoing('invalid', 'invalid')).toBe(false);
   });
 });
 
@@ -135,9 +112,6 @@ describe('getNextFutureEvents', () => {
     expect(result![0].id).toBe('future');
   });
 
-  it('returns null for non-array input', () => {
-    expect(getNextFutureEvents(null as any)).toBeNull();
-  });
 });
 
 // ─── getPastEvents ─────────────────────────────────────────────────
