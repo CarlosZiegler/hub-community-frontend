@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+import { FadeIn } from '@/components/animations';
+import { ProfileSkeleton } from '@/components/profile-skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,14 +38,7 @@ export default function ProfilePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-muted-foreground">Carregando...</p>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!isAuthenticated) {
@@ -62,6 +57,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
+        <FadeIn direction="up" duration={0.3}>
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -163,11 +159,19 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent>
                   {agendasLoading ? (
-                    <div className="text-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        Carregando agendas...
-                      </p>
+                    <div className="space-y-4">
+                      {[1, 2, 3].map(i => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-3 p-3 rounded-lg border border-border"
+                        >
+                          <div className="h-12 w-12 rounded-lg bg-muted animate-pulse flex-shrink-0" />
+                          <div className="flex-1">
+                            <div className="h-5 w-3/4 bg-muted animate-pulse rounded mb-1" />
+                            <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : agendas.length === 0 ? (
                     <div className="text-center py-8">
@@ -311,6 +315,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+        </FadeIn>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { EventForm } from '@/components/admin/event-form';
+import { FadeIn } from '@/components/animations';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { GET_EVENT_BY_SLUG_OR_ID, UPDATE_EVENT } from '@/lib/queries';
@@ -95,8 +96,19 @@ export default function EditEventPage() {
 
   if (queryLoading) {
     return (
-      <div className="container mx-auto py-10 flex justify-center">
-        <p>Carregando evento...</p>
+      <div className="container mx-auto py-10 px-4 max-w-3xl">
+        <div className="mb-8">
+          <div className="h-8 w-48 bg-muted animate-pulse rounded mb-2" />
+          <div className="h-4 w-72 bg-muted animate-pulse rounded" />
+        </div>
+        <div className="border rounded-lg p-6 bg-card space-y-4">
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="space-y-2">
+              <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-10 w-full bg-muted animate-pulse rounded" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -117,6 +129,7 @@ export default function EditEventPage() {
   }
 
   return (
+    <FadeIn direction="up" duration={0.3}>
     <div className="container mx-auto py-10 px-4 max-w-3xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Editar Evento</h1>
@@ -135,5 +148,6 @@ export default function EditEventPage() {
         )}
       </div>
     </div>
+    </FadeIn>
   );
 }

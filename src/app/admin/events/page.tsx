@@ -6,6 +6,8 @@ import { ptBR } from 'date-fns/locale';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
+import { EventsTableSkeleton } from '@/components/admin/events-table-skeleton';
+import { FadeIn } from '@/components/animations';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -50,11 +52,7 @@ export default function EventsAdminPage() {
   };
 
   if (loading) {
-    return (
-      <div className="container mx-auto py-10 flex justify-center">
-        <p>Carregando eventos...</p>
-      </div>
-    );
+    return <EventsTableSkeleton />;
   }
 
   if (error) {
@@ -68,6 +66,7 @@ export default function EventsAdminPage() {
   const events = data?.events?.data || [];
 
   return (
+    <FadeIn direction="up" duration={0.3}>
     <div className="container mx-auto py-10 px-4">
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -154,5 +153,6 @@ export default function EventsAdminPage() {
         </Table>
       </div>
     </div>
+    </FadeIn>
   );
 }
