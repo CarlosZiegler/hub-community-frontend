@@ -204,11 +204,14 @@ export default function EventAnalyticsPage() {
     }
   );
 
+  // Use the real documentId from the eventAnalytics response (URL id may be a slug)
+  const resolvedEventDocId = data?.eventAnalytics?.event_id || id;
+
   const { data: trackingData, refetch: refetchTracking } = useQuery(
     GET_EVENT_TRACKING_METRICS,
     {
-      variables: { eventDocumentId: id, period: trackingPeriod },
-      skip: !id,
+      variables: { eventDocumentId: resolvedEventDocId, period: trackingPeriod },
+      skip: !resolvedEventDocId,
       fetchPolicy: 'network-only',
     }
   );
