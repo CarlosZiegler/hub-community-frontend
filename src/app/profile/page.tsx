@@ -1,11 +1,11 @@
 'use client';
 
-import { Calendar, LogOut, Mail, Monitor, Moon, Shield, Sun, User } from 'lucide-react';
+import { Calendar, LogOut, Mail, Monitor, Moon, Phone, Shield, Sun, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { FadeIn } from '@/components/animations';
 import { ProfileSkeleton } from '@/components/profile-skeleton';
@@ -19,14 +19,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { useAgenda } from '@/contexts/agenda-context';
 import { useAuth } from '@/contexts/auth-context';
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, signOut, isLoading } = useAuth();
+  const { user, isAuthenticated, signOut, isLoading, updatePhone } = useAuth();
   const { agendas, isLoading: agendasLoading } = useAgenda();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+
+  const [phoneInput, setPhoneInput] = useState('');
+  const [isUpdatingPhone, setIsUpdatingPhone] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+  const [phoneSuccess, setPhoneSuccess] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -37,6 +43,33 @@ export default function ProfilePage() {
   const handleSignOut = () => {
     signOut();
     router.push('/');
+  };
+
+  const handlePhoneSubmit = async () => {
+    if (!phoneInput.trim()) {
+      setPhoneError('Informe um número de telefone.');
+      return;
+    }
+    // Clean input: keep only +, digits, and spaces
+    const cleaned = phoneInput.replace(/[^\d+\s()-]/g, '');
+    // Basic international phone validation: starts with + and has at least 8 digits
+    const digitsOnly = cleaned.replace(/\D/g, '');
+    if (digitsOnly.length < 8 || digitsOnly.length > 15) {
+      setPhoneError('Informe um número válido com código do país (ex: +55 11 98765-4321).');
+      return;
+    }
+
+    setPhoneError('');
+    setIsUpdatingPhone(true);
+    try {
+      await updatePhone(cleaned);
+      setPhoneSuccess(true);
+      setTimeout(() => setPhoneSuccess(false), 3000);
+    } catch (err: any) {
+      setPhoneError(err.message || 'Erro ao atualizar telefone.');
+    } finally {
+      setIsUpdatingPhone(false);
+    }
   };
 
   if (isLoading) {
@@ -73,7 +106,7 @@ export default function ProfilePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Profile Card */}
-              <div>
+              <div className="space-y-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -137,6 +170,15 @@ export default function ProfilePage() {
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-muted-foreground">
+                          Telefone WhatsApp
+                        </label>
+                        <p className="text-foreground flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          {user?.phone || 'Não informado'}
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-muted-foreground">
                           Status
                         </label>
                         <Badge
@@ -149,6 +191,52 @@ export default function ProfilePage() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Phone Alert Card — only if no phone */}
+                {!user?.phone && (
+                  <Card className="border-amber-500/50 bg-amber-500/5">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                        <Phone className="h-5 w-5" />
+                        Adicionar Telefone WhatsApp
+                      </CardTitle>
+                      <CardDescription>
+                        Adicione seu número de WhatsApp para receber informações sobre os eventos.
+                        Aceita números internacionais.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex gap-2">
+                        <Input
+                          type="tel"
+                          placeholder="+55 11 98765-4321"
+                          value={phoneInput}
+                          onChange={(e) => {
+                            setPhoneInput(e.target.value);
+                            setPhoneError('');
+                          }}
+                          disabled={isUpdatingPhone}
+                          className="flex-1"
+                        />
+                        <Button
+                          onClick={handlePhoneSubmit}
+                          disabled={isUpdatingPhone || !phoneInput.trim()}
+                        >
+                          {isUpdatingPhone ? 'Salvando...' : 'Salvar'}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Ex: +55 11 98765-4321 (Brasil), +1 555 123-4567 (EUA), +351 912 345 678 (Portugal)
+                      </p>
+                      {phoneError && (
+                        <p className="text-sm text-red-500">{phoneError}</p>
+                      )}
+                      {phoneSuccess && (
+                        <p className="text-sm text-green-600">Telefone atualizado com sucesso!</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Agendas Card */}
                 <Card>

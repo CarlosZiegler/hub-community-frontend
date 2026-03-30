@@ -320,6 +320,8 @@ export const SIGN_IN = gql`
       token
       email
       username
+      phone
+      id
     }
   }
 `;
@@ -333,6 +335,17 @@ export const FORWARD_PASSWORD = gql`
 export const RESET_PASSWORD = gql`
   mutation ResetPassword($code: String!, $password: String!, $passwordConfirmation: String!) {
     resetPassword(code: $code, password: $password, passwordConfirmation: $passwordConfirmation)
+  }
+`;
+
+export const UPDATE_USER_PHONE = gql`
+  mutation UpdateUserPhone($userId: String!, $phone: String!) {
+    updateUserPhone(userId: $userId, phone: $phone) {
+      id
+      username
+      email
+      phone
+    }
   }
 `;
 
@@ -473,6 +486,7 @@ export const GET_USER_BY_USERNAME = gql`
     userByUsername(username: $username) {
       username
       email
+      phone
       speaker {
         avatar
       }

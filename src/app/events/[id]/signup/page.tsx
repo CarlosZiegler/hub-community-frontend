@@ -9,6 +9,7 @@ import {
   CreditCard,
   Loader2,
   MapPin,
+  Phone,
   QrCode,
   Tag,
   Ticket,
@@ -54,7 +55,7 @@ type SignupStep = 'select' | 'confirm' | 'processing' | 'success' | 'payment';
 export default function EventSignupPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, updatePhone } = useAuth();
   const slugOrId = params.id as string;
 
   // State
@@ -68,6 +69,8 @@ export default function EventSignupPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [paymentPolling, setPaymentPolling] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [phoneInput, setPhoneInput] = useState('');
+  const [phoneError, setPhoneError] = useState('');
 
   // Queries & Mutations
   const { data, loading } = useQuery(GET_EVENT_BY_SLUG_OR_ID, {
@@ -147,15 +150,43 @@ export default function EventSignupPage() {
   // Handle signup
   const handleSignup = async () => {
     if (!user || !selectedBatch) return;
+
+    // If user has no phone and didn't provide one, show error
+    if (!user.phone && !phoneInput.trim()) {
+      setPhoneError('Informe seu WhatsApp para prosseguir com a inscrição.');
+      setStep('confirm');
+      return;
+    }
+
+    // Validate phone format if provided
+    if (!user.phone && phoneInput.trim()) {
+      const digitsOnly = phoneInput.replace(/\D/g, '');
+      if (digitsOnly.length < 8 || digitsOnly.length > 15) {
+        setPhoneError('Informe um número válido com código do país (ex: +55 11 98765-4321).');
+        setStep('confirm');
+        return;
+      }
+    }
+
     setStep('processing');
     setErrorMessage('');
+    setPhoneError('');
 
     try {
+      // If user has no phone, update it first
+      if (!user.phone && phoneInput.trim()) {
+        const cleaned = phoneInput.replace(/[^\d+\s()-]/g, '');
+        await updatePhone(cleaned);
+      }
+
+      const phoneToSend = user.phone || phoneInput.replace(/[^\d+\s()-]/g, '');
+
       const variables: any = {
         eventId: slugOrId,
         name: user.username || user.email.split('@')[0],
         email: user.email,
         batch_id: selectedBatch.id,
+        phone_number: phoneToSend || undefined,
       };
 
       if (couponCode && couponDiscount) {
@@ -507,6 +538,33 @@ export default function EventSignupPage() {
                           </span>
                         </div>
                       </div>
+
+                      {/* Phone input — only if user has no phone */}
+                      {!user?.phone && (
+                        <div className="mt-6 p-4 bg-amber-500/5 border border-amber-500/30 rounded-xl space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-amber-600" />
+                            <h4 className="font-medium text-foreground text-sm">WhatsApp</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Informe seu WhatsApp para receber informações sobre o evento.
+                            Aceita números internacionais.
+                          </p>
+                          <Input
+                            type="tel"
+                            placeholder="+55 11 98765-4321"
+                            value={phoneInput}
+                            onChange={(e) => {
+                              setPhoneInput(e.target.value);
+                              setPhoneError('');
+                            }}
+                          />
+                          {phoneError && (
+                            <p className="text-xs text-red-500">{phoneError}</p>
+                          )}
+                        </div>
+                      )}
+
                       <Button
                         className="w-full mt-6 rounded-full"
                         size="lg"
@@ -543,6 +601,12 @@ export default function EventSignupPage() {
                     </span>
                   </div>
                 )}
+                {(user?.phone || phoneInput) && (
+                  <div className="flex justify-between py-2 border-b border-border/30">
+                    <span className="text-muted-foreground">WhatsApp</span>
+                    <span className="font-medium text-foreground">{user?.phone || phoneInput}</span>
+                  </div>
+                )}
                 <div className="flex justify-between py-2 text-lg font-bold">
                   <span>Total</span>
                   <span className="text-primary">
@@ -556,6 +620,11 @@ export default function EventSignupPage() {
               {errorMessage && (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-600 text-sm">
                   {errorMessage}
+                </div>
+              )}
+              {phoneError && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-600 text-sm">
+                  {phoneError}
                 </div>
               )}
 

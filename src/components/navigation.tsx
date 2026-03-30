@@ -103,11 +103,14 @@ function NavigationContent() {
               {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-2">
+                    <Button variant="ghost" size="sm" className="gap-2 relative">
                       <User className="h-4 w-4" />
                       <span className="hidden sm:inline-block">
                         {user?.name || user?.username || 'Perfil'}
                       </span>
+                      {!user?.phone && (
+                        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-background animate-pulse" />
+                      )}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" side="top">
@@ -201,11 +204,14 @@ function NavigationContent() {
           {isAuthenticated ? (
             <Link
               href="/profile"
-              className={`flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+              className={`relative flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
                 isActive('/profile') ? 'text-primary bg-primary/10' : 'text-muted-foreground'
               }`}
             >
               <User className="h-6 w-6" />
+              {!user?.phone && (
+                <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-background animate-pulse" />
+              )}
             </Link>
           ) : (
             <button

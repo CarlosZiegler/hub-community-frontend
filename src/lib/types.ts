@@ -172,6 +172,7 @@ export interface User {
   username: string;
   name?: string;
   avatar?: string;
+  phone?: string;
 }
 
 export interface SignUpInput {
@@ -191,6 +192,8 @@ export interface SignInResponse {
     token: string;
     email: string;
     username: string;
+    phone: string;
+    id: string;
   };
 }
 
@@ -223,6 +226,7 @@ export interface AuthContextType extends AuthState {
   signOut: () => void;
   forwardPassword: (email: string) => Promise<void>;
   resetPassword: (code: string, password: string, passwordConfirmation: string) => Promise<void>;
+  updatePhone: (phone: string) => Promise<void>;
   validateToken: () => boolean;
   showLogoutAlert: () => void;
   hideLogoutAlert: () => void;

@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { isTokenExpired } from '@/lib/jwt';
-import { FORWARD_PASSWORD, RESET_PASSWORD, SIGN_IN, SIGN_UP } from '@/lib/queries';
+import { FORWARD_PASSWORD, RESET_PASSWORD, SIGN_IN, SIGN_UP, UPDATE_USER_PHONE } from '@/lib/queries';
 import type {
   AuthContextType,
   AuthState,
@@ -35,7 +35,8 @@ type AuthAction =
   | { type: 'SIGN_OUT' }
   | { type: 'LOAD_FROM_STORAGE'; payload: { user: User; token: string } }
   | { type: 'SHOW_LOGOUT_ALERT' }
-  | { type: 'HIDE_LOGOUT_ALERT' };
+  | { type: 'HIDE_LOGOUT_ALERT' }
+  | { type: 'UPDATE_USER'; payload: { user: User } };
 
 const initialState: AuthState = {
   user: null,
@@ -89,6 +90,11 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         ...state,
         showLogoutModal: false,
       };
+    case 'UPDATE_USER':
+      return {
+        ...state,
+        user: action.payload.user,
+      };
     default:
       return state;
   }
@@ -105,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useMutation<ForwardPasswordResponse>(FORWARD_PASSWORD);
   const [resetPasswordMutation] =
     useMutation<ResetPasswordResponse>(RESET_PASSWORD);
+  const [updateUserPhoneMutation] = useMutation(UPDATE_USER_PHONE);
 
   // Load auth data from localStorage on mount
   useEffect(() => {
@@ -204,8 +211,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data?.signIn?.token) {
         // Use the actual user data returned by the BFF
         const user: User = {
+          id: data.signIn.id || undefined,
           email: data.signIn.email || input.identifier,
           username: data.signIn.username || input.identifier.split('@')[0],
+          phone: data.signIn.phone || undefined,
         };
 
         saveToStorage(user, data.signIn.token);
@@ -269,6 +278,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updatePhone = async (phone: string) => {
+    if (!state.user?.id) {
+      throw new Error('User ID not found. Please sign in again.');
+    }
+    try {
+      const { data } = await updateUserPhoneMutation({
+        variables: { userId: state.user.id, phone },
+      });
+      if (data?.updateUserPhone) {
+        const updatedUser: User = {
+          ...state.user,
+          phone: data.updateUserPhone.phone || phone,
+        };
+        // Update in memory and localStorage
+        dispatch({ type: 'UPDATE_USER', payload: { user: updatedUser } });
+        if (state.token) {
+          saveToStorage(updatedUser, state.token);
+        }
+      }
+    } catch (error) {
+      console.error('Update phone error:', error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     ...state,
     signIn,
@@ -276,6 +310,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
     forwardPassword,
     resetPassword,
+    updatePhone,
     validateToken,
     showLogoutAlert,
     hideLogoutAlert,
@@ -291,3 +326,4 @@ export function useAuth() {
   }
   return context;
 }
+

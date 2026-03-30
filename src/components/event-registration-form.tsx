@@ -23,7 +23,8 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
-const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+// International phone: at least 8 digits
+const phoneRegex = /^\+?[\d\s()-]{8,20}$/;
 
 const formSchema = z.object({
   fullName: z.string().min(3, {
@@ -33,7 +34,7 @@ const formSchema = z.object({
     message: 'Email inválido.',
   }),
   phone: z.string().regex(phoneRegex, {
-    message: 'Telefone deve estar no formato (XX) XXXXX-XXXX.',
+    message: 'Informe um número válido com código do país (ex: +55 11 98765-4321).',
   }),
 });
 
@@ -45,20 +46,6 @@ interface EventRegistrationFormProps {
   onSubmit: (data: FormValues) => void | Promise<void>;
   eventTitle?: string;
 }
-
-const formatPhone = (value: string) => {
-  // Remove all non-digits
-  const digits = value.replace(/\D/g, '');
-
-  // Apply mask
-  if (digits.length <= 2) {
-    return digits;
-  } else if (digits.length <= 7) {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-  } else {
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
-  }
-};
 
 export function EventRegistrationForm({
   isOpen,
@@ -90,13 +77,7 @@ export function EventRegistrationForm({
     }
   };
 
-  const handlePhoneChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: any
-  ) => {
-    const formatted = formatPhone(e.target.value);
-    field.onChange(formatted);
-  };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -155,14 +136,13 @@ export function EventRegistrationForm({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Número de Telefone</FormLabel>
+                  <FormLabel>WhatsApp</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
-                      placeholder="(11) 98765-4321"
+                      placeholder="+55 11 98765-4321"
                       {...field}
-                      onChange={e => handlePhoneChange(e, field)}
-                      maxLength={15}
+                      maxLength={20}
                       disabled={isSubmitting}
                     />
                   </FormControl>
