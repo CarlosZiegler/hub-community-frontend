@@ -21,8 +21,18 @@ export const metadata: Metadata = {
   title: 'Hub Community',
   description: 'A casa open source da sua comunidade',
   keywords: 'tecnologia, comunidades, eventos, programação, desenvolvimento',
+  manifest: '/manifest.json',
   icons: {
     icon: '/images/logo-square.png',
+    apple: '/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Hub Community',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
 };
 
@@ -33,6 +43,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#7c3aed" />
+      </head>
       <body className={inter.className}>
         <FirebaseProvider>
           <ApolloProviderWrapper>

@@ -9,6 +9,7 @@ import { Suspense, useState } from 'react';
 import { AnimateOnScroll } from '@/components/animations';
 import { CommunityGrid } from '@/components/community-grid';
 import { EventsSection } from '@/components/events-section';
+import { InstallBanner } from '@/components/install-banner';
 import { OngoingEventsSection } from '@/components/ongoing-events-section';
 import { OngoingEventsSectionSkeleton } from '@/components/ongoing-events-section-skeleton';
 import { PastEventsSection } from '@/components/past-events-section';
@@ -117,6 +118,11 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto px-4 pt-6 pb-12">
+
+        {/* Install Banner */}
+        <div className="max-w-2xl mx-auto mb-4">
+          <InstallBanner />
+        </div>
 
         {/* Search Box */}
         <div className="max-w-2xl mx-auto mb-6">

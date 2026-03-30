@@ -24,6 +24,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 import { FadeIn } from '@/components/animations';
+import { InstallAppRow } from '@/components/install-banner';
 import { ProfileSkeleton } from '@/components/profile-skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -446,6 +447,9 @@ export default function ProfilePage() {
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground/40 flex-shrink-0" />
               </Link>
+
+              {/* Add to Home Screen */}
+              <InstallAppRow />
 
               {/* Sign Out */}
               <button
