@@ -27,6 +27,7 @@ import { Button } from '@/components/ui/button';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/auth-context';
+import { usePageVisitTracker, useTracking } from '@/hooks/use-tracking';
 import { trackViewEventDetail } from '@/lib/analytics';
 import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_SLUG_OR_ID, IS_USER_SIGNED_UP } from '@/lib/queries';
 import { adjustToBrazilTimezone } from '@/utils/event';
@@ -43,10 +44,12 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
   >(new Set());
   const [showLightbox, setShowLightbox] = useState(false);
 
-  // Track event detail view
+  // Track event detail view (legacy)
   useEffect(() => {
     trackViewEventDetail(slugOrId);
   }, [slugOrId]);
+
+  const { track } = useTracking();
 
   // Use eventBySlugOrId query that searches both slug and id
   const { data, loading, error } = useQuery<{ eventBySlugOrId: any }>(
@@ -58,6 +61,9 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
 
   // Extract event from query response
   const event = data?.eventBySlugOrId;
+
+  // Track page visit via analytics system (after data is available)
+  usePageVisitTracker(event?.documentId, `/events/${slugOrId}`);
 
   const {
     data: agendaData,
@@ -91,6 +97,11 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
 
   // Handle "Participar" button click
   const handleParticipate = () => {
+    track({
+      eventType: 'signup_click',
+      eventDocumentId: event?.documentId,
+      metadata: { route: `/events/${event?.slug || slugOrId}/signup` },
+    });
     if (hasInternalRegistration) {
       router.push(`/events/${event?.slug || slugOrId}/signup`);
     } else if (event?.subscription_link) {
@@ -402,6 +413,11 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
             variant="outline"
             className="rounded-full w-full"
             onClick={() => {
+              track({
+                eventType: 'share_click',
+                eventDocumentId: event?.documentId,
+                metadata: { route: `/events/${event?.slug || slugOrId}` },
+              });
               if (
                 typeof navigator !== 'undefined' &&
                 typeof window !== 'undefined' &&

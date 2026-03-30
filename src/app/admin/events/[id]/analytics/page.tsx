@@ -2,6 +2,7 @@
 
 import { useQuery } from '@apollo/client';
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   ArrowLeft,
   Users,
@@ -14,6 +15,10 @@ import {
   Loader2,
   ExternalLink,
   RefreshCw,
+  Eye,
+  MousePointerClick,
+  Share2,
+  Globe,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -47,7 +52,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { GET_EVENT_ANALYTICS } from '@/lib/queries';
+import { GET_EVENT_ANALYTICS, GET_EVENT_TRACKING_METRICS } from '@/lib/queries';
 import { EventAnalyticsResponse } from '@/lib/types';
 
 /* ─── Color Palette ──────────────────────────────────────────── */
@@ -188,6 +193,7 @@ export default function EventAnalyticsPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
+  const [trackingPeriod, setTrackingPeriod] = useState('all');
 
   const { data, loading, error, refetch } = useQuery<EventAnalyticsResponse>(
     GET_EVENT_ANALYTICS,
@@ -197,6 +203,17 @@ export default function EventAnalyticsPage() {
       fetchPolicy: 'network-only',
     }
   );
+
+  const { data: trackingData, refetch: refetchTracking } = useQuery(
+    GET_EVENT_TRACKING_METRICS,
+    {
+      variables: { eventDocumentId: id, period: trackingPeriod },
+      skip: !id,
+      fetchPolicy: 'network-only',
+    }
+  );
+
+  const trackingMetrics = trackingData?.eventTrackingMetrics;
 
   if (loading) {
     return (
@@ -303,7 +320,7 @@ export default function EventAnalyticsPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => refetch()}
+              onClick={() => { refetch(); refetchTracking(); }}
               className="gap-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -385,6 +402,88 @@ export default function EventAnalyticsPage() {
             bgColor={COLORS.accentDim}
             delay={150}
           />
+        </div>
+
+        {/* ─── Website Tracking Section ────────────────────────── */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <Eye className="w-4 h-4 text-cyan-500" />
+              Engajamento do Site
+            </h2>
+            <div className="flex items-center bg-muted/50 rounded-lg p-0.5 border border-border/50">
+              {[
+                { label: '24h', value: '24h' },
+                { label: '7d', value: '7d' },
+                { label: '30d', value: '30d' },
+                { label: 'Tudo', value: 'all' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setTrackingPeriod(opt.value)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+                    trackingPeriod === opt.value
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+        {trackingMetrics && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              title="Visitas na Página"
+              value={trackingMetrics.total_visits}
+              subtitle={
+                trackingMetrics.unique_visitors > 0
+                  ? `${trackingMetrics.unique_visitors} visitantes únicos`
+                  : undefined
+              }
+              icon={Eye}
+              color="#06B6D4"
+              bgColor="rgba(6, 182, 212, 0.15)"
+              delay={200}
+            />
+            <MetricCard
+              title="Visitantes Únicos"
+              value={trackingMetrics.unique_visitors}
+              subtitle={
+                trackingMetrics.total_visits > 0
+                  ? `${((trackingMetrics.unique_visitors / trackingMetrics.total_visits) * 100).toFixed(0)}% de conversão`
+                  : undefined
+              }
+              icon={Globe}
+              color="#14B8A6"
+              bgColor="rgba(20, 184, 166, 0.15)"
+              delay={250}
+            />
+            <MetricCard
+              title="Cliques em Participar"
+              value={trackingMetrics.signup_clicks}
+              subtitle={
+                trackingMetrics.total_visits > 0
+                  ? `${((trackingMetrics.signup_clicks / trackingMetrics.total_visits) * 100).toFixed(1)}% taxa de conversão`
+                  : undefined
+              }
+              icon={MousePointerClick}
+              color="#F97316"
+              bgColor="rgba(249, 115, 22, 0.15)"
+              delay={300}
+            />
+            <MetricCard
+              title="Compartilhamentos"
+              value={trackingMetrics.share_clicks}
+              icon={Share2}
+              color="#EC4899"
+              bgColor="rgba(236, 72, 153, 0.15)"
+              delay={350}
+            />
+          </div>
+        )}
         </div>
 
         {/* ─── Charts Row ──────────────────────────────────────── */}

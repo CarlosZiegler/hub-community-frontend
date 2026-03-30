@@ -725,3 +725,31 @@ export const GET_EVENT_ANALYTICS = gql`
     }
   }
 `;
+
+export const TRACK_EVENT = gql`
+  mutation TrackEvent($input: TrackEventInput!) {
+    trackEvent(input: $input) {
+      success
+      id
+    }
+  }
+`;
+
+export const GET_EVENT_TRACKING_METRICS = gql`
+  query GetEventTrackingMetrics($eventDocumentId: String!, $period: String) {
+    eventTrackingMetrics(eventDocumentId: $eventDocumentId, period: $period) {
+      total_visits
+      unique_visitors
+      signup_clicks
+      share_clicks
+      visits_by_day {
+        date
+        count
+      }
+      visits_by_referrer {
+        referrer
+        count
+      }
+    }
+  }
+`;
