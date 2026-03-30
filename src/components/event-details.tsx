@@ -2,29 +2,30 @@
 
 import { useQuery } from '@apollo/client';
 import {
+  Award,
   Calendar,
+  CheckCircle2,
   Clock,
   ExternalLink,
   MapPin,
   Share2,
   Users,
   Video,
-  Award,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { FadeIn } from '@/components/animations';
 import { EventDetailsSkeleton } from '@/components/event-details-skeleton';
-import { EventRegistrationForm } from '@/components/event-registration-form';
 import { TalkCard } from '@/components/talk-card';
 import { Button } from '@/components/ui/button';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/auth-context';
 import { trackViewEventDetail } from '@/lib/analytics';
-import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_SLUG_OR_ID } from '@/lib/queries';
+import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_SLUG_OR_ID, IS_USER_SIGNED_UP } from '@/lib/queries';
 import { adjustToBrazilTimezone } from '@/utils/event';
 
 interface EventDetailsProps {
@@ -32,11 +33,11 @@ interface EventDetailsProps {
 }
 
 export function EventDetails({ slugOrId }: EventDetailsProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const router = useRouter();
   const [optimisticAgendaTalks, setOptimisticAgendaTalks] = useState<
     Set<string>
   >(new Set());
-  const [isRegistrationFormOpen, setIsRegistrationFormOpen] = useState(false);
 
   // Track event detail view
   useEffect(() => {
@@ -64,21 +65,30 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
     fetchPolicy: 'cache-and-network',
   });
 
+  // Check if user is already signed up
+  const { data: signupCheckData } = useQuery(IS_USER_SIGNED_UP, {
+    variables: { eventId: slugOrId, email: user?.email || '' },
+    skip: !isAuthenticated || !user?.email,
+  });
+
+  const isAlreadySignedUp = signupCheckData?.isUserSignedUp?.is_signed_up;
+  const callLink = signupCheckData?.isUserSignedUp?.call_link;
+
+  // Check if event has internal registration (products with enabled batches)
+  const hasInternalRegistration =
+    event?.products?.some((p: any) => p.enabled && p.batches?.some((b: any) => b.enabled));
+
   // Handle agenda changes
   const handleAgendaChange = () => {
     setOptimisticAgendaTalks(new Set()); // Reset optimistic state
     refetchAgenda();
   };
 
-  // Handle registration form submission
-  const handleRegistrationSubmit = async (data: {
-    fullName: string;
-    email: string;
-    phone: string;
-  }) => {
-    // TODO: Implement API call to register user for event
-    // For now, just redirect to subscription link if available
-    if (event?.subscription_link) {
+  // Handle "Participar" button click
+  const handleParticipate = () => {
+    if (hasInternalRegistration) {
+      router.push(`/events/${event?.slug || slugOrId}/signup`);
+    } else if (event?.subscription_link) {
       window.open(event.subscription_link, '_blank');
     }
   };
@@ -228,10 +238,121 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
         ></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/40"></div>
 
-        <div className="relative container mx-auto px-4 h-full flex items-end pb-8 md:pb-12 pt-24 md:pt-32">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg max-w-4xl">
-            {typeof event.title === 'string' ? event.title : 'Evento'}
-          </h1>
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-4 h-full flex items-end pb-10 md:pb-14 pt-24 md:pt-32">
+          <div className="text-white max-w-4xl">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-5 drop-shadow-lg">
+              {typeof event.title === 'string' ? event.title : 'Evento'}
+            </h1>
+
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-7 text-white/90">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 opacity-70" />
+                <span className="text-sm md:text-base">
+                  {startDate.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                  {isMultiDay && (
+                    <>
+                      {' — '}
+                      {endDate.toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 opacity-70" />
+                <span className="text-sm md:text-base">
+                  {startDate.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                  {isMultiDay && (
+                    <>
+                      {' até '}
+                      {endDate.toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </>
+                  )}
+                </span>
+              </div>
+              {event.talks?.length > 0 && Array.isArray(event.talks) && (
+                <div className="flex items-center gap-2">
+                  <Video className="h-4 w-4 opacity-70" />
+                  <span className="text-sm md:text-base">{event.talks.length} palestras</span>
+                </div>
+              )}
+              {event.communities?.length > 0 &&
+                Array.isArray(event.communities) && (
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 opacity-70" />
+                    <span className="text-sm md:text-base">{event.communities.length} comunidades</span>
+                  </div>
+                )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              {isAlreadySignedUp ? (
+                <div className="flex items-center gap-2 bg-green-500/20 text-green-400 rounded-full px-6 py-2.5 font-semibold">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Você já está inscrito
+                </div>
+              ) : (
+                <Button
+                  size="lg"
+                  className="bg-white text-gray-900 hover:bg-gray-100 rounded-full px-6 font-semibold shadow-lg"
+                  onClick={handleParticipate}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Participar do Evento
+                </Button>
+              )}
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/40 text-white hover:bg-white/10 bg-white/5 backdrop-blur-sm rounded-full px-6 w-full sm:w-auto"
+                onClick={() => {
+                  if (
+                    typeof navigator !== 'undefined' &&
+                    typeof window !== 'undefined' &&
+                    'share' in navigator
+                  ) {
+                    navigator.share({
+                      title: `Confira o evento ${
+                        typeof event.title === 'string' ? event.title : 'Evento'
+                      }\n`,
+                      text: `\n${
+                        typeof event?.description === 'string'
+                          ? event.description
+                          : 'Descrição não disponível'
+                      }`,
+                      url: window.location.href,
+                    });
+                  }
+                }}
+              >
+                <Share2 className="h-4 w-4 mr-2" />
+                Compartilhar
+              </Button>
+              <Link href={`/certificado?event=${event.documentId}`} passHref>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/40 text-white hover:bg-white/10 bg-white/5 backdrop-blur-sm rounded-full px-6 w-full sm:w-auto"
+                >
+                  <Award className="h-4 w-4 mr-2" />
+                  Solicitar meu certificado
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -590,13 +711,29 @@ export function EventDetails({ slugOrId }: EventDetailsProps) {
         </section>
       </div>
 
-      {/* Registration Form */}
-      <EventRegistrationForm
-        isOpen={isRegistrationFormOpen}
-        onClose={() => setIsRegistrationFormOpen(false)}
-        onSubmit={handleRegistrationSubmit}
-        eventTitle={typeof event.title === 'string' ? event.title : undefined}
-      />
+      {/* Online Event Call Link for signed-up users */}
+      {isAlreadySignedUp && event.is_online && callLink && (
+        <div className="container mx-auto px-4 pb-8">
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Video className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Evento Online</h3>
+                <p className="text-sm text-muted-foreground">Acesse a chamada do evento</p>
+              </div>
+            </div>
+            <a href={callLink} target="_blank" rel="noopener noreferrer">
+              <Button className="rounded-full gap-2">
+                <Video className="h-4 w-4" />
+                Acessar
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      )}
     </div>
     </FadeIn>
   );
